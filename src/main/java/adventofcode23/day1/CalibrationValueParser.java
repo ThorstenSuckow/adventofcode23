@@ -12,7 +12,7 @@ public class CalibrationValueParser extends Parser {
 
         ParserResult res = new ParserResult();
 
-        final String regex = "([0-9])";
+        final String regex = "([0-9]){1}(.*([0-9]))?";
         final String string = line;
 
         final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
@@ -21,17 +21,22 @@ public class CalibrationValueParser extends Parser {
         String first = "";
         String last = "";
 
-        while (matcher.find()) {
-            if (first != "") {
-                last = matcher.group(0);
+        if (matcher.find()) {
+            if (matcher.group(1) != null) {
+                first = matcher.group(1);
+            }
+            if (matcher.group(3) != null) {
+                last = matcher.group(3);
+            } else {
+                last = first;
             }
 
-            if (first == "") {
-                first = matcher.group(0);
-            }
+            res.setValue(Integer.valueOf(first + last));
+        } else {
+            res.setValue(0);
         }
 
-        res.setValue(Integer.valueOf(first + (last == null ? "" : last)));
+
         return res;
     }
 

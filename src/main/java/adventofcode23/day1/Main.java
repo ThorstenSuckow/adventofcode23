@@ -19,7 +19,7 @@ public class Main {
             sum += (Integer)result.getValue();
         }
 
-        System.out.println(sum);
+        System.out.println("The sum of all calibration values is: " + sum);
     }
 
 }
