@@ -1,5 +1,6 @@
 # Day 1: Trebuchet?!
 
+## The Problem
 https://adventofcode.com/2023/day/1
 
 Something is wrong with global snow production, and you've been selected to take a look. The Elves have even given you a map; on it, they've used stars to mark the top fifty locations that are likely to be having problems.
@@ -27,3 +28,8 @@ In this example, the calibration values of these four lines are 12, 38, 15, and 
 Consider your entire calibration document. What is the sum of all of the calibration values?
 
 To begin, get your [puzzle input](https://adventofcode.com/2023/day/1/input).
+
+
+## The Solution
+
+The sum of all calibration values is: 54331.
