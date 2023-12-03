@@ -15,7 +15,7 @@ public class CalibrationValueParser extends Parser {
         final String regex = "([0-9]){1}(.*([0-9]))?";
         final String string = line;
 
-        final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+        final Pattern pattern = Pattern.compile(regex);
         final Matcher matcher = pattern.matcher(string);
 
         String first = "";
