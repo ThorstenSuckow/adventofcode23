@@ -35,7 +35,7 @@ Determine which games would have been possible if the bag had been loaded with o
 
 #### The Solution
 
-The sum of all vaid Game ids is: 2541
+The sum of all valid Game ids is: 2541
 
 ### Part Two
 
