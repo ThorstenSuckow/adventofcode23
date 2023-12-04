@@ -21,6 +21,15 @@ public class Main {
         }
 
         System.out.println("The sum of all vaid Game ids is: " + sum);
+
+        results = reader.parseContents("input/day2/input.txt", new PoweredGameSequenceParser());
+
+        sum = 0;
+        for (ParserResult result: results) {
+            sum += (Integer)result.getValue();
+        }
+
+        System.out.println("The sum of the power all Game ids is: " + sum);
     }
 
 }

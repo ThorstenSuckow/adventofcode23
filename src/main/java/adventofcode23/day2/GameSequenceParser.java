@@ -53,7 +53,7 @@ public class GameSequenceParser extends Parser {
         return res;
     }
 
-    private boolean isValid(String count, String color) {
+    private boolean isValid(final String count, final String color) {
 
         //  12 red cubes, 13 green cubes, and 14 blue cubes
         switch (color) {
