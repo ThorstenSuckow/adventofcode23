@@ -25,8 +25,9 @@ public class ResourceReader {
              BufferedReader bufferedReader = new BufferedReader(streamReader)) {
 
             String line;
+            int lineIndex = 0;
             while ((line = bufferedReader.readLine()) != null) {
-                parserResults.add(parser.parseLine(line));
+                parserResults.add(parser.parseLine(line, lineIndex++));
             }
 
         } catch (IOException e) {

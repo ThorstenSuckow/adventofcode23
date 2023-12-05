@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 public class FixedCalibrationValueParser extends Parser {
 
-    public ParserResult parseLine(final String line) {
+    public ParserResult parseLine(final String line, int index) {
 
         ParserResult res = new ParserResult();
 

@@ -26,8 +26,9 @@ public class FixedCalibrationValueParserTest {
         tests.put("zoneight234", 14);
         tests.put("7pqrstsixteen", 76);
 
+        int i = 0;
         for (HashMap.Entry<String, Integer> set: tests.entrySet()) {
-            assertEquals(set.getValue(), (Integer)parser.parseLine(set.getKey()).getValue());
+            assertEquals(set.getValue(), (Integer)parser.parseLine(set.getKey(), i++).getValue());
         }
 
 

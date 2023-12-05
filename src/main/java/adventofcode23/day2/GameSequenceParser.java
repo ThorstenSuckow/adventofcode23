@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 public class GameSequenceParser extends Parser {
 
-    public ParserResult parseLine(String line) {
+    public ParserResult parseLine(String line, int index) {
 
         ParserResult res = new ParserResult();
 

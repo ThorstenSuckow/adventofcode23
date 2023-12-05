@@ -23,8 +23,10 @@ public class CalibrationValueParserTest {
         tests.put("a1b2c3d4e5f", 15);
         tests.put("treb7uchet", 77);
 
+        int i = 0;
         for (HashMap.Entry<String, Integer> set: tests.entrySet()) {
-            assertEquals(set.getValue(), (Integer)parser.parseLine(set.getKey()).getValue());
+
+            assertEquals(set.getValue(), (Integer)parser.parseLine(set.getKey(), i++).getValue());
         }
 
 
