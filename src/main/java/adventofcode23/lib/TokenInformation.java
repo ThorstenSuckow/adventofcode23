@@ -1,6 +1,6 @@
-package adventofcode23.day3;
+package adventofcode23.lib;
 
-class TokenInformation {
+public class TokenInformation {
 
     public int line;
 

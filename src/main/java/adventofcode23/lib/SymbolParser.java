@@ -1,7 +1,8 @@
-package adventofcode23.day3;
+package adventofcode23.lib;
 
 import adventofcode23.lib.Parser;
 import adventofcode23.lib.ParserResult;
+import adventofcode23.lib.TokenInformation;
 
 import java.util.ArrayList;
 import java.util.List;

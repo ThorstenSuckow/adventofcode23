@@ -1,12 +1,11 @@
 package adventofcode23.day3;
 
-import adventofcode23.day1.CalibrationValueParser;
 import adventofcode23.lib.ParserResult;
 import adventofcode23.lib.ResourceReader;
+import adventofcode23.lib.SymbolParser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

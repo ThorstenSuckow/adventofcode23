@@ -1,9 +1,9 @@
 package adventofcode23.day3;
 
 import adventofcode23.lib.ParserResult;
+import adventofcode23.lib.TokenInformation;
 
 import java.util.List;
-import java.util.Map;
 
 public class MachinePartRectMatcher {
 

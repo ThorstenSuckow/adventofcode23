@@ -2,6 +2,7 @@ package adventofcode23.day3;
 
 import adventofcode23.lib.ParserResult;
 import adventofcode23.lib.ResourceReader;
+import adventofcode23.lib.SymbolParser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

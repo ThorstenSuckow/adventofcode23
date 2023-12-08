@@ -1,8 +1,8 @@
 package adventofcode23.day3;
 
 import adventofcode23.lib.ParserResult;
+import adventofcode23.lib.TokenInformation;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
