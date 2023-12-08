@@ -11,6 +11,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResourceReader {
+
+
+    public int getLineCount(String fileName) {
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+
+        int lineIndex = 0;
+
+        try (InputStreamReader streamReader =
+                 new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+             BufferedReader bufferedReader = new BufferedReader(streamReader)) {
+
+            while (bufferedReader.readLine() != null) {
+                lineIndex++;
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return lineIndex;
+    }
+
     public List<ParserResult> parseContents(String fileName, Parser parser) {
 
 
@@ -36,4 +60,6 @@ public class ResourceReader {
 
         return parserResults;
     }
+
+
 }

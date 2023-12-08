@@ -9,9 +9,11 @@ public class Main {
 
     public static void main(String[] args) {
 
+        String fileName = "input/day4/input.txt";
+
         ResourceReader reader = new ResourceReader();
 
-        List<ParserResult> results = reader.parseContents("input/day4/input.txt", new ScratchCardParser());
+        List<ParserResult> results = reader.parseContents(fileName, new ScratchCardParser());
 
         int sum = 0;
         for (ParserResult result : results) {
@@ -20,7 +22,12 @@ public class Main {
 
         System.out.println("The sum of all scratchcard-points is: " + sum);
 
+        CopyScratchCardParser copyScratchCardParser = new CopyScratchCardParser();
+        System.out.println(reader.getLineCount(fileName));
+        copyScratchCardParser.setAmountOfCards(reader.getLineCount(fileName));
+        results = reader.parseContents(fileName, copyScratchCardParser);
 
+        System.out.println("The sum of original and copied scratchcards is: " + results.getLast().getValue());
 
     }
 

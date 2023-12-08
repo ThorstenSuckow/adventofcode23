@@ -14,4 +14,5 @@ The sum of all winning cards ids is: 28750.
 
 #### The Solution
 
+The sum of original and copied scratchcards is: 10212704
 
