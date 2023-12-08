@@ -20,7 +20,7 @@ public class Main {
             sum += (Integer)result.getValue();
         }
 
-        System.out.println("The sum of all vaid Game ids is: " + sum);
+        System.out.println("The sum of all valid Game ids is: " + sum);
 
         results = reader.parseContents("input/day2/input.txt", new PoweredGameSequenceParser());
 
