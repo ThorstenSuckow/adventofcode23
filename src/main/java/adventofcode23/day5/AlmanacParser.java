@@ -36,6 +36,9 @@ public class AlmanacParser extends Parser {
 
     }
 
+    String[] graph ={"soil", "fertilizer", "water", "light", "temperature",
+                    "humidity", "location"};
+
     String currentGroup;
 
     Long[] seedsToPlant;
@@ -73,13 +76,65 @@ public class AlmanacParser extends Parser {
         return res;
     }
 
-    public HashMap<Long, Long> getSeedToSoilMap () {
 
-        HashMap<Long, Long> map = new HashMap<>();
+    public Long[] getSeeds() {
+        return seedsToPlant;
+    }
+
+    public Long getMinFor(String key) {
+
+        Long[] seeds = getSeeds();
+
+        Long min = Long.MAX_VALUE;
+        for (int i = 0; i < seeds.length; i++) {
+            min = Math.min(min, getValueFor(seeds[i], key));
+        }
+
+        return min;
+    }
+
+    /**
+     *
+     * @param type any of soil, fertilizer, water, light, temperature,
+     *             humidity, location
+     * @return
+     */
+    public Long getMapping (Long id, String type) {
+
+        String key;
+        Long mapping = id;
+
+        switch (type) {
+            case "soil":
+                key = "seed-to-soil";
+                break;
+            case "fertilizer":
+                key = "soil-to-fertilizer";
+                break;
+            case "water":
+                key = "fertilizer-to-water";
+                break;
+            case "light":
+                key = "water-to-light";
+                break;
+            case "temperature":
+                key = "light-to-temperature";
+                break;
+            case "humidity":
+                key = "temperature-to-humidity";
+                break;
+            case "location":
+                key = "humidity-to-location";
+                break;
+            default:
+                System.out.println(type);
+                throw new IllegalArgumentException();
+
+
+        }
 
         for (Map.Entry<String, List<Range>> entry: sections.entrySet()) {
-
-            if (!entry.getKey().equals("seed-to-soil")) {
+            if (!entry.getKey().equals(key)) {
                 continue;
             }
 
@@ -87,32 +142,33 @@ public class AlmanacParser extends Parser {
 
             for (Range r: rangeList) {
 
-                System.out.println("--checking range " + r);
-
                 for (Long i = 0L; i < r.rangeLength; i++) {
-                    Long seedNumber = r.sourceRangeStart + i;
-                    Long soilNumber = r.destinationRangeStart + i;
-                    //if (Arrays.asList(seedsToPlant).contains(seedNumber)) {
-                        map.put(seedNumber, soilNumber);
-                    //}
+                    Long source = r.sourceRangeStart + i;
+                    Long destination = r.destinationRangeStart + i;
+                    if (source == id) {
+                        return destination;
+                    }
                 }
             }
         }
 
-        return map;
+        return mapping;
     }
 
-    public Long getMinLocationFromSeedToSoilMap() {
+    public Long getValueFor(Long id, String key) {
 
-        HashMap<Long, Long> map = getSeedToSoilMap();
+        Long value = id;
 
-        Long min = Long.MAX_VALUE;
-        for (Map.Entry<Long, Long> entry: map.entrySet()) {
-            System.out.println(entry.getKey() + " " + entry.getValue());
-            min = Math.min(min, entry.getValue());
+        for (int i = 0; i < graph.length; i++) {
+
+            value = getMapping(value, graph[i]);
+
+            if (graph[i] == key) {
+                break;
+            }
         }
 
-        return min;
+        return value;
     }
 
 
