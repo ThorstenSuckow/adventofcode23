@@ -130,18 +130,21 @@ public class AlmanacParser extends Parser {
         return sources;//toIntervalArray(intervalList);
     }
 
-
-    public Interval[] getDestinationIntervals(final Interval interval, String key) {
+    public Interval[] getDestinationIntervals(
+        final Interval interval,
+        final String key) {
 
         List<Interval> destinationIntervals = new ArrayList<>();
         String resolvedKey = resolveKey(key);
-        Interval[] complements = null;
+        Interval[] complements;
 
         List<Range> rangeList = sections.get(resolvedKey);
 
         for (Range range: rangeList) {
             complements = interval.complementTo(range.getSourceInterval());
-            Interval intersection = range.toDestinationInterval(interval.intersectionWith(range.getSourceInterval()));
+            Interval intersection = range.toDestinationInterval(
+                interval.intersectionWith(range.getSourceInterval())
+            );
 
             if (intersection != null) {
                 destinationIntervals.add(intersection);
@@ -156,7 +159,6 @@ public class AlmanacParser extends Parser {
                 return toIntervalArray(destinationIntervals);
             }
         }
-
 
         return new Interval[]{interval};
     }
