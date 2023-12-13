@@ -6,9 +6,15 @@ import java.util.regex.Pattern;
 
 public class Hand implements Comparable<Hand> {
 
+    public static boolean USE_JOKER = false;
     public static String[] CARD_ORDER = new String[]{
             "A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4","3", "2"
     };
+
+    public static String[] JOKER_ORDER = new String[]{
+            "A", "K", "Q", "T", "9", "8", "7", "6", "5", "4","3", "2","J"
+    };
+
     public final static HandType[] HAND_ORDER = new HandType[]{
             HandType.FIVE_OF_A_KIND,
             HandType.FOUR_OF_A_KIND,
@@ -38,9 +44,43 @@ public class Hand implements Comparable<Hand> {
         String cards;
         public Stack(String s) {
             cards = s;
+            int jokers = 0;
+
             for (int i = 0; i < s.length(); i++) {
+                if (USE_JOKER && s.charAt(i) == 'J') {
+                    jokers++;
+                }
                 add(s.charAt(i));
             }
+
+            if (USE_JOKER) {
+                Character strmax = null;
+                int max = Integer.MIN_VALUE;
+                for (Map.Entry<String, Integer> entry: stack.entrySet()) {
+                    if (entry.getValue() > max && !entry.getKey().equals("J")) {
+                        max = entry.getValue();
+                        strmax = entry.getKey().toCharArray()[0];
+                    }
+                }
+
+                if (strmax == null) {
+                    return;
+                }
+
+                for (int i = 0; i < jokers; i++) {
+                    add(strmax);
+                    if (stack.get("J") != null) {
+                        int js =  stack.get("J") - 1;
+                        if (js == 0) {
+                            stack.remove("J");
+                        } else {
+                            stack.put("J", js);
+                        }
+                    }
+                }
+            }
+
+
         }
         public void add(char c) {
             String s = Character.toString(c);
@@ -67,14 +107,6 @@ public class Hand implements Comparable<Hand> {
             throw new IllegalArgumentException();
         }
 
-        String regex = "^[AKQJT98765432]+$";
-        final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
-        final Matcher matcher = pattern.matcher(cards);
-
-        if (matcher.hasMatch()) {
-            throw new IllegalArgumentException();
-        }
-
         this.stack = new Stack(cards);
         this.cards = cards;
         type = getType();
@@ -87,6 +119,10 @@ public class Hand implements Comparable<Hand> {
     public HandType getType() {
         if (type != null) {
             return type;
+        }
+
+        if (stack.values().stream().reduce(0, (a, b) -> a + b) != 5) {
+            throw new RuntimeException();
         }
 
         if (isFiveOfAKind()) {
@@ -222,13 +258,15 @@ public class Hand implements Comparable<Hand> {
         String a = Character.toString(cardsA.charAt(0)).toUpperCase();
         String b = Character.toString(cardsB.charAt(0)).toUpperCase();
 
+        String[] cardOrder = USE_JOKER ? JOKER_ORDER : CARD_ORDER;
+
         int x = 0;
         int y = 0;
-        for (int i = 0; i < CARD_ORDER.length; i++) {
-            if (CARD_ORDER[i].equals(a)) {
+        for (int i = 0; i < cardOrder.length; i++) {
+            if (cardOrder[i].equals(a)) {
                 x = i;
             }
-            if (CARD_ORDER[i].equals(b)) {
+            if (cardOrder[i].equals(b)) {
                 y = i;
             }
         }

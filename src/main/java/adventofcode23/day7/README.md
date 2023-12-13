@@ -14,5 +14,5 @@ The total winnings are 250453939.
 ### Part Two
 
 #### The Solution
-
+The total winnings (w/ Joker-rule) are 248652697.
 

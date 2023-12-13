@@ -15,12 +15,20 @@ public class HandParserTest {
     public void testHandParser() {
 
         ResourceReader reader = new ResourceReader();
-
         String fileName = "input/day7/testinput.txt";
 
+        Hand.USE_JOKER = false;
         HandParser parser = new HandParser();
         reader.parseContents(fileName, parser);
 
         assertEquals(6440L, parser.computeTotalWinnings());
+
+        Hand.USE_JOKER = true;
+        parser = new HandParser();
+        reader.parseContents(fileName, parser);
+        assertEquals(5905L, parser.computeTotalWinnings());
+
+
+
     }
 }
