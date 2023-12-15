@@ -8,7 +8,7 @@ public class Main {
         ResourceReader reader = new ResourceReader();
         String fileName = "input/day8/input.txt";
 
-        MapParser parser = new MapParser();
+        MapParser parser = new MapParser("AAA");
         reader.parseContents(fileName, parser);
 
         int sum = parser.navigate();

@@ -8,6 +8,7 @@ public class Node {
 
     private String name;
 
+    private Node parent;
 
     public Node(String name) {
         this.name = name;
@@ -16,6 +17,16 @@ public class Node {
     public String getName() {
         return name;
     }
+
+    public Node getParent() {
+        return parent;
+    }
+
+
+    public void setParent(Node parent) {
+        this.parent = parent;
+    }
+
 
     public Node getLeft() {
         return lft;
@@ -27,16 +38,18 @@ public class Node {
 
     public void setLeft(Node lft) {
         this.lft = lft;
+        lft.setParent(this);
     }
 
     public void setRight(Node rgt) {
         this.rgt = rgt;
+        rgt.setParent(this);
     }
 
 
     public String toString() {
         return name + " = "
-                + "("+ (lft != null ? lft.getName() : null)
-                + ", " + (rgt != null ? rgt.getName() : null)  + ")";
+                + "(l: "+ (lft != null ? lft.getName() : null)
+                + ", r:" + (rgt != null ? rgt.getName() : null)  + ", p: " + (parent != null ? parent.getName() : null) + ")";
     }
 }
