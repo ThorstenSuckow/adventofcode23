@@ -16,12 +16,12 @@ public class MazeParser extends Parser {
 
     private final int[] BLOCKED = new int[]{0, 0};
 
-    private final String[] dirUp = new String[]{"|", "7", "F", "S"};
-    private final String[] dirDown = new String[]{"|", "L", "J", "S"};
+    private final String[] dirUp = new String[]{"|", "L", "J", "S"};
+    private final String[] dirDown = new String[]{"|", "F", "7", "S"};
 
-    private final String[] dirRight = new String[]{"-", "J", "7", "S"};
+    private final String[] dirRight = new String[]{"-", "F", "L", "S"};
 
-    private final String[] dirLeft = new String[]{"-", "F", "L", "S"};
+    private final String[] dirLeft = new String[]{"-", "7", "J", "S"};
 
 
     String[][] maze;
@@ -62,14 +62,80 @@ public class MazeParser extends Parser {
         return maze[position[0]][position[1]];
     }
 
-    public int[][] getPossibleDirections(int[] position) {
+    public int[][] getMovementOptionsToNextTile(int[] position, int[][] directions) {
+
+        List<int[]> dirs= new ArrayList<>();
+
+        for (int i = 0; i < directions.length; i++) {
+
+            if (isUp(directions[i]) && Arrays.asList(dirDown).contains(peek(position, UP))) {
+                dirs.add(UP);
+            }
+
+            if (isDown(directions[i]) && Arrays.asList(dirUp).contains(peek(position, DOWN))) {
+                dirs.add(DOWN);
+            }
+
+            if (isRight(directions[i]) && Arrays.asList(dirLeft).contains(peek(position, RIGHT))) {
+                dirs.add(RIGHT);
+            }
+
+            if (isLeft(directions[i]) && Arrays.asList(dirRight).contains(peek(position, LEFT))) {
+                dirs.add(LEFT);
+            }
+        }
+
+        int[][] options = new int[dirs.size()][];
+
+        int j = 0;
+        for (int[] dir: dirs) {
+            options[j++] = dir;
+        }
+
+        return options;
+    }
+
+    public int[] getPossibleDirection(int[] position, int[] direction) {
+        int[][] directions = getPossibleDirectionsForTile(position);
+
+        int[][] options = getMovementOptionsToNextTile(position, directions);
+
+        if (options.length != 2) {
+            System.err.println("Unexpected options for "
+                    + Arrays.toString(position)
+                    + " (" + getSymbol(position) + ") and direction "
+                    + Arrays.toString(direction)
+                    + "(" + dirToString(direction) + ")"
+            );
+
+            for (int i = 0; i < options.length; i++) {
+                System.err.println(Arrays.toString(options[i]));
+            }
+            throw new RuntimeException();
+        }
+
+        // System.out.println(" :: Got possible next direction for " + getSymbol(position) + " and direction " + dirToString(direction));
+        //System.out.println(Arrays.toString(options[0]));
+        // System.out.println(Arrays.toString(options[1]));
+
+
+        for (int i = 0; i < options.length; i++) {
+            if (direction[0] + options[i][0] != 0
+                || options[i][1] + direction[1] != 0
+            ) {
+                //System.out.println(" -> Returning direction " + dirToString(options[i]));
+                return options[i];
+            }
+        }
+
+        return BLOCKED;
+    }
+
+    public int[][] getPossibleDirectionsForTile(int[] position) {
         if (maze == null) {
             throw new IllegalStateException();
         }
 
-        if (!getSymbol(position).equals("S")) {
-            throw new RuntimeException();
-        }
 
         List<int[]> dirs= new ArrayList<>();
 
@@ -100,140 +166,117 @@ public class MazeParser extends Parser {
     }
 
     public boolean canMove(int[] position, int[] dir) {
-        if (isUp(dir) && Arrays.asList(dirUp).contains(peek(position, dir))) {
+        if (isUp(dir) && Arrays.asList(dirUp).contains(getSymbol(position))) {
             return true;
         }
 
-        if (isRight(dir) && Arrays.asList(dirRight).contains(peek(position, dir))) {
+        if (isRight(dir) && Arrays.asList(dirRight).contains(getSymbol(position))) {
             return true;
         }
 
-        if (isLeft(dir) && Arrays.asList(dirLeft).contains(peek(position, dir))) {
+        if (isLeft(dir) && Arrays.asList(dirLeft).contains(getSymbol(position))) {
             return true;
         }
 
 
-        if (isDown(dir) && Arrays.asList(dirDown).contains(peek(position, dir))) {
+        if (isDown(dir) && Arrays.asList(dirDown).contains(getSymbol(position))) {
             return true;
         }
 
-        throw new RuntimeException("cannot move :(");
+        return false;
     }
 
     public String peek(int[] position, int[] dir) {
-        return maze[position[0] + dir[0]][position[1] + dir[1]];
+        String peek = "X";
+
+        try {
+            return maze[position[0] + dir[0]][position[1] + dir[1]];
+        } catch (ArrayIndexOutOfBoundsException ignored) {
+
+        }
+
+        return peek;
     }
 
-    public long compute() {
+
+    public List<int[]> computePath(int[] startPosition, int[] direction) {
+
+        List<int[]> path = new ArrayList<>();
+
+        int[] position = move(startPosition, direction);
+
+        System.out.println("\uD83D\uDEB6 " + dirToString(direction ) + " " + getSymbol(position) + " ("+Arrays.toString(position)+")");
+
+        int steps = 0;
+        path.add(position);
+        while (!getSymbol(position).equals("S")) {
+            direction = getPossibleDirection(position, direction);
+
+            if (isBlocked(direction)) {
+                throw new RuntimeException("Blocked :(");
+            }
+            position = move(position, direction);
+
+            path.add(position);
+
+            System.out.println("\uD83D\uDEB6 " + dirToString(direction ) + " " + getSymbol(position) + " ("+Arrays.toString(position)+")");
+            steps++;
+        }
+
+        System.out.println("\uD83C\uDFC1 reached " + getSymbol(position) + " in " +steps + " steps");
+
+        return path;
+    }
+
+
+    public int compute() {
 
         int[] position = findStart();
 
         // check possible direction
-        int[][] dirs = getPossibleDirections(position);
+        int[][] directions = getPossibleDirectionsForTile(position);
+        int[][] dirs = getMovementOptionsToNextTile(position, directions);
 
-        if (dirs.length == 0) {
-            throw new RuntimeException();
+        if (dirs.length != 2) {
+            throw new RuntimeException("Cannot move from start: " + dirs.length + " options, should be 2");
+        }
+        List<int[]> path1 = computePath(position, dirs[0]);
+        List<int[]> path2 = computePath(position, dirs[1]);
+
+        return intersectPaths(path1, path2);
+    }
+
+
+    public int intersectPaths(List<int[]> path1, List<int[]> path2) {
+
+        int steps1 = 0;
+        for (int[] step1: path1) {
+            steps1++;
+            int steps2 = 0;
+            for (int[] step2: path2) {
+                steps2++;
+                if (step1[0] == step2[0] && step1[1] == step2[1] && steps1 == steps2) {
+                    System.out.println(steps1 + ": " + Arrays.toString(step1) + " " + Arrays.toString(step2));
+                    return steps1;
+                }
+            }
         }
 
-        int steps = 0;
-        position = move(position, dirs[0]);
-        while (!getSymbol(position).equals("S")) {
-            position = move(position);
-            steps++;
-        }
-
-
-        return 0;
+        return -1;
     }
 
     public int[] move(int[] position, int[] dir) {
 
+        int[] newPosition = new int[]{0, 0};
         if (canMove(position, dir)) {
-            position[0] = position[0] + dir[0];
-            position[1] = position[1] + dir[1];
+            newPosition[0] = position[0] + dir[0];
+            newPosition[1] = position[1] + dir[1];
         }
 
-        return position;
+        return newPosition;
     }
 
-    /**
-     * | is a vertical pipe connecting north and south.
-     * - is a horizontal pipe connecting east and west.
-     * L is a 90-degree bend connecting north and east.
-     * J is a 90-degree bend connecting north and west.
-     * 7 is a 90-degree bend connecting south and west.
-     * F is a 90-degree bend connecting south and east.
-     * . is ground; there is no pipe in this tile.
-     * S is t
-     * @param symbol
-     * @param dir = 2 for right, dir = 4 for left, dir = 3 for down, dir = 1 for up
-     * @return
-     */
-    public int[] move(String symbol, int[] dir) {
 
-        int[] steps = new int[2];
-
-        switch (symbol) {
-            case "|":
-                if (isUp(dir)) {
-                    return UP;
-                }
-                if (isDown(dir)) {
-                    return DOWN;
-                }
-                break;
-            case "-":
-                if (isLeft(dir)) {
-                    return LEFT;
-                }
-                if (isRight(dir)) {
-                    return RIGHT;
-                }
-                break;
-            case "L":
-                // north and eas
-                if (isDown(dir)) {
-                    return RIGHT;
-                }
-                if (isLeft(dir)) {
-                    return UP;
-                }
-                break;
-            case "J":
-                // north and west
-                if (isDown(dir)) {
-                    return LEFT;
-                }
-                if (isRight(dir)) {
-                    return UP;
-                }
-                break;
-            case "7":
-                // south and west
-                if (isUp(dir)) {
-                    return LEFT;
-                }
-                if (isRight(dir)) {
-                    return DOWN;
-                }
-
-                break;
-            case "F":
-                // down and right
-                if (isUp(dir)) {
-                    return RIGHT;
-                }
-                if (isLeft(dir)) {
-                    return DOWN;
-                }
-                break;
-            case ".", "S":
-                return BLOCKED;
-
-        }
-
-        return BLOCKED;
-    }
 
     public boolean isRight(int[] dir) {
         return dir[0] == 0 && dir[1] == 1;
@@ -251,6 +294,9 @@ public class MazeParser extends Parser {
         return dir[0] == -1 && dir[1] == 0;
     }
 
+    public boolean isBlocked(int[] dir) {
+        return dir[0] == 0 && dir[1] == 0;
+    }
 
 
     public void log(String[][] maze) {
@@ -281,4 +327,21 @@ public class MazeParser extends Parser {
         return maze;
     }
 
+
+    public String dirToString(int[] dir) {
+        if (isUp(dir)) {
+            return "UP";
+        }
+        if (isDown(dir)) {
+            return "DOWN";
+        }
+        if (isRight(dir)) {
+            return "RIGHT";
+        }
+        if (isLeft(dir)) {
+            return "LEFT";
+        }
+
+        return "BLOCKED";
+    }
 }

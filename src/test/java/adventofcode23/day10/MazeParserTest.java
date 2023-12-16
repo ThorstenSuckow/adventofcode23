@@ -17,17 +17,18 @@ public class MazeParserTest {
 
         ResourceReader reader = new ResourceReader();
         String fileName = "input/day10/testinput_1.txt";
+        String fileName2 = "input/day10/testinput_2.txt";
+        MazeParser parser;
 
-
-        MazeParser parser = new MazeParser();
+        parser = new MazeParser();
         reader.parseContents(fileName, parser);
 
-        parser.logMaze();
+        assertEquals(4, parser.compute());
 
-        assertArrayEquals(new int[]{1, 1}, parser.findStart());
+        parser = new MazeParser();
+        reader.parseContents(fileName2, parser);
+        assertEquals(8, parser.compute());
 
-
-        assertEquals(0, parser.compute());
 
     }
 
