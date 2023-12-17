@@ -12,3 +12,4 @@ Steps along the loop required to get from the starting position to the point far
 ### Part Two
 
 #### The Solution
+Tiles enclosed by the loop: 523
