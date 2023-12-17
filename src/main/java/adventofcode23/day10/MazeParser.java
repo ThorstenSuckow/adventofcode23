@@ -23,6 +23,7 @@ public class MazeParser extends Parser {
 
     private final String[] dirLeft = new String[]{"-", "7", "J", "S"};
 
+    private List<int[]> cornerPoints = new ArrayList<>();
 
     String[][] maze;
 
@@ -199,35 +200,116 @@ public class MazeParser extends Parser {
     }
 
 
+    /**
+     * Solution for part two uses shoelace formula and Pick's theorem
+     * @return
+     */
+    public int computeEnclosedTiles() {
+
+        int[] position = findStart();
+
+        // check possible direction
+        int[][] directions = getPossibleDirectionsForTile(position);
+        int[][] dirs = getMovementOptionsToNextTile(position, directions);
+
+        List<int[]> path = computePath(position, dirs[0]);
+
+        int[][] points = cornerPoints.toArray(int[][]::new);
+
+        // shoelace algorithm, and circumfence
+        double area = 0;
+        int x1, x2, y1, y2;
+        double circumfence = 0;
+        for (int i = 0; i < points.length; i++) {
+            x1 = points[i][1];
+            x2 = points[(i+1) % points.length][1];
+            y1 = points[i][0];
+            y2 = points[(i+1) % points.length][0];
+            area += x1 * y2 - y1 * x2;
+            if (i > 0) {
+                circumfence +=
+                    Math.sqrt(
+                        Math.pow(points[i][0] - points[i - 1][0], 2) +
+                        Math.pow(points[i][1] - points[i - 1][1], 2)
+                    );
+            } else {
+                circumfence +=
+                    Math.sqrt(
+                        Math.pow(points[0][0] - points[points.length - 1][0], 2) +
+                        Math.pow(points[0][1] - points[points.length - 1][1], 2)
+                    );
+            }
+        }
+        area = Math.abs(area) / 2d;
+
+        // Picks theorem
+        double i = area - ((circumfence / 2) -1);
+
+
+        return (int)i;
+    }
+
+
     public List<int[]> computePath(int[] startPosition, int[] direction) {
 
         List<int[]> path = new ArrayList<>();
 
         int[] position = move(startPosition, direction);
+        int[] oldDirection;
 
-        System.out.println("\uD83D\uDEB6 " + dirToString(direction ) + " " + getSymbol(position) + " ("+Arrays.toString(position)+")");
+        addCornerPoint(null, direction, startPosition);
+
+        //System.out.println("\uD83D\uDEB6 " + dirToString(direction ) + " " + getSymbol(position) + " ("+Arrays.toString(position)+")");
 
         int steps = 0;
         path.add(position);
         while (!getSymbol(position).equals("S")) {
+            oldDirection = direction;
             direction = getPossibleDirection(position, direction);
+
+            addCornerPoint(oldDirection, direction, position);
 
             if (isBlocked(direction)) {
                 throw new RuntimeException("Blocked :(");
             }
             position = move(position, direction);
 
+
             path.add(position);
 
-            System.out.println("\uD83D\uDEB6 " + dirToString(direction ) + " " + getSymbol(position) + " ("+Arrays.toString(position)+")");
+            //System.out.println("\uD83D\uDEB6 " + dirToString(direction ) + " " + getSymbol(position) + " ("+Arrays.toString(position)+")");
             steps++;
         }
 
-        System.out.println("\uD83C\uDFC1 reached " + getSymbol(position) + " in " +steps + " steps");
+        //System.out.println("\uD83C\uDFC1 reached " + getSymbol(position) + " in " +steps + " steps");
 
         return path;
     }
 
+
+    public void addCornerPoint(int[] oldDirection, int[] newDirection, int[] position) {
+
+        if (pointEquals(oldDirection, newDirection)) {
+            return;
+        }
+
+        for (int[] corner: cornerPoints) {
+            if (pointEquals(corner, position)) {
+                return;
+            }
+        }
+
+        cornerPoints.add(position);
+
+    }
+
+    public boolean pointEquals(int[] x, int[] y) {
+        if (x == null || y == null) {
+            return false;
+        }
+
+        return x[0] == y[0] && x[1] == y[1];
+    }
 
     public int compute() {
 
@@ -256,7 +338,6 @@ public class MazeParser extends Parser {
             for (int[] step2: path2) {
                 steps2++;
                 if (step1[0] == step2[0] && step1[1] == step2[1] && steps1 == steps2) {
-                    System.out.println(steps1 + ": " + Arrays.toString(step1) + " " + Arrays.toString(step2));
                     return steps1;
                 }
             }
@@ -299,19 +380,6 @@ public class MazeParser extends Parser {
     }
 
 
-    public void log(String[][] maze) {
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze[i].length; j++) {
-                System.out.print(maze[i][j]);
-            }
-            System.out.println();
-        }
-    }
-
-    public void logMaze() {
-        makeMaze();
-        log(maze);
-    }
     public String[][] makeMaze() {
         if (maze != null) {
             return maze;

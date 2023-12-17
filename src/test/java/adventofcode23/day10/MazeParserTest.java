@@ -18,6 +18,8 @@ public class MazeParserTest {
         ResourceReader reader = new ResourceReader();
         String fileName = "input/day10/testinput_1.txt";
         String fileName2 = "input/day10/testinput_2.txt";
+        String fileName3 = "input/day10/testinput_3.txt";
+
         MazeParser parser;
 
         parser = new MazeParser();
@@ -28,6 +30,12 @@ public class MazeParserTest {
         parser = new MazeParser();
         reader.parseContents(fileName2, parser);
         assertEquals(8, parser.compute());
+
+
+        // part two
+        parser = new MazeParser();
+        reader.parseContents(fileName3, parser);
+        assertEquals(8, parser.computeEnclosedTiles());
 
 
     }
