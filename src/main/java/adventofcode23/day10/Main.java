@@ -22,5 +22,8 @@ public class Main {
                 parser.compute()
         );
 
+
+        System.out.println("Tiles enclosed by the loop: " +parser.computeEnclosedTiles());
+
     }
 }
