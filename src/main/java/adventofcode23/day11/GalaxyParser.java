@@ -9,7 +9,22 @@ public class GalaxyParser extends Parser {
 
     List<String> galaxyList = new ArrayList<>();
 
-    Map<Integer, int[]> galaxyMap = new HashMap<>();
+    Map<Integer, long[]> galaxyMap = new HashMap<>();
+
+    int[] multipliedCols;
+
+    int[] multipliedRows;
+
+    private int growthFactor;
+
+    public GalaxyParser() {
+        this(2);
+    }
+
+    public GalaxyParser(int growthFactor) {
+        this.growthFactor = growthFactor;
+    }
+
 
     public ParserResult parseLine(String line, int lineIndex) {
 
@@ -24,29 +39,17 @@ public class GalaxyParser extends Parser {
         return res;
     }
 
-    public boolean processed(int a, int b, List<int[]> list) {
-        for (int[] entry : list) {
-            if ((entry[0] == a && entry[1] == b) ||
-                    (entry[0] == b && entry[1] == a )) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public int computePaths() {
-        Map<Integer, int[]> map = getGalaxyMap();
+    public long computePaths() {
+        Map<Integer, long[]> map = getGalaxyMap();
 
 
-        List<int[]> processed  = new ArrayList<>();
-
-        int sum = 0;
+        long sum = 0;
         int galaxyCount = map.size();
 
         for (int i = 0; i < galaxyCount; i++) {
             for (int j = galaxyCount - 1; j > i; j--) {
-                int length = computePath(i, j);
+
+                long length = computePath(i, j);
                 sum += length;
             }
         }
@@ -55,14 +58,14 @@ public class GalaxyParser extends Parser {
     }
 
 
-    public int computePath(int galaxyA, int galaxyB) {
+    public long computePath(int galaxyA, int galaxyB) {
 
-        Map<Integer, int[]> map = getGalaxyMap();
+        Map<Integer, long[]> map = getGalaxyMap();
 
-        int x1, x2, y1, y2;
+        long x1, x2, y1, y2;
 
-        int[] outer = map.get(galaxyA);
-        int[] inner = map.get(galaxyB);
+        long[] outer = map.get(galaxyA);
+        long[] inner = map.get(galaxyB);
 
         x1 = outer[0];
         y1 = outer[1];
@@ -73,11 +76,19 @@ public class GalaxyParser extends Parser {
     }
 
 
+    public int[] getMultipliedCols() {
+        return multipliedCols;
+    }
+
+    public int[] getMultipliedRows() {
+        return multipliedRows;
+    }
+
     public List<ParserResult> postProcess(List<ParserResult> parserResults) {
 
-        List<String> remap = new ArrayList<>();
-
         ArrayList<Integer> cols = new ArrayList<>();
+        ArrayList<Integer> rows = new ArrayList<>();
+
         // find empty cols
         int lineLength = galaxyList.get(0).length();
         for (int i = 0; i < lineLength; i++) {
@@ -91,37 +102,48 @@ public class GalaxyParser extends Parser {
             if (addToCol) {
                 cols.add(i);
             }
+
         }
 
-        // add cols
-        for (int i = lineLength - 1; i >= 0; i--) {
-            for (int j = 0; j < galaxyList.size(); j++) {
-                if (cols.contains(i)) {
-                    String line = galaxyList.get(j);
-                    galaxyList.set(j, line.substring(0, i) + "." + line.substring(i));
-                }
-            }
-            cols.add(i);
-        }
 
         // multiply rows
+        int rowIndex = 0;
         for (String line: galaxyList) {
-            remap.add(line);
             if (!line.contains("#")) {
-                remap.add(line);
+                rows.add(rowIndex);
             }
+            rowIndex++;
         }
 
-        galaxyList = remap;
 
         // map galaxies
         int number = 0, y = 0, pos = 0;
 
+        multipliedCols = cols.stream().mapToInt(i -> i).toArray();
+        multipliedRows = rows.stream().mapToInt(i -> i).toArray();
 
         for (String line: galaxyList) {
             pos = line.indexOf("#", pos);
-            while (pos != -1) {
-                galaxyMap.put(number++, new int[]{pos, y});
+
+
+            long rowDelta = 0;
+
+            for (int j = 0; j < multipliedRows.length; j++) {
+                if (multipliedRows[j] < y) {
+                   rowDelta += (growthFactor - 1);
+                }
+            }
+
+            while (pos >= 0) {
+                long colDelta = 0;
+                for (int j = 0; j < multipliedCols.length; j++) {
+                    if (multipliedCols[j] < pos) {
+                        colDelta += (growthFactor - 1);
+                    }
+                }
+
+                galaxyMap.put(number++, new long[]{pos + colDelta, y + rowDelta});
+
                 pos = line.indexOf("#", pos + 1);
             }
 
@@ -132,15 +154,15 @@ public class GalaxyParser extends Parser {
     }
 
 
-    public Map<Integer, int[]> getGalaxyMap() {
+    public Map<Integer, long[]> getGalaxyMap() {
         return galaxyMap;
     }
 
     public void logGalaxyMap() {
 
-        Map<Integer, int[]> map = getGalaxyMap();
+        Map<Integer, long[]> map = getGalaxyMap();
 
-        for (Map.Entry<Integer, int[]> entry: map.entrySet()) {
+        for (Map.Entry<Integer, long[]> entry: map.entrySet()) {
             System.out.println("Galaxy "
                     + entry.getKey() + ": ["
                     + entry.getValue()[0]

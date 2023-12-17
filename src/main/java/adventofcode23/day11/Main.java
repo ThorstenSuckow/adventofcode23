@@ -14,5 +14,11 @@ public class Main {
         reader.parseContents(fileName, parser);
 
         System.out.println("The sum of the shortest path between every pair of galaxies is " + parser.computePaths());
+
+        parser = new GalaxyParser(1_000_000);
+        reader.parseContents(fileName, parser);
+
+        System.out.println("The sum of the shortest path between every pair of galaxies is with a growth factor of 1.000.000 is " + parser.computePaths());
+
     }
 }
