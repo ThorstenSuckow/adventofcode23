@@ -58,7 +58,7 @@ public class ResourceReader {
             throw new RuntimeException(e);
         }
 
-        return parserResults;
+        return parser.postProcess(parserResults);
     }
 
 
