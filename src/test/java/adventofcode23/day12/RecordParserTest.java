@@ -27,10 +27,13 @@ public class RecordParserTest {
 
         parser = new RecordParser();
 
-      //assertEquals(4, parser.compute("??????? 1,1,1"));
-       // assertEquals(4, parser.compute("???????? 2,1"));
-
-        assertEquals(1, parser.compute("#?#?...???.### 1,1,3"));
+      // assertEquals(4, parser.compute("????????? 3,1,2"));
+        assertEquals(10, parser.compute("??????? 2,1"));
+      /*  assertEquals(7, parser.compute("??????? 1"));
+        assertEquals(6, parser.compute("??????? 2"));
+        assertEquals(10, parser.compute("??????? 2,1"));
+*/
+        assertEquals(1, parser.compute("??????? 5,1"));
     }
 
 }

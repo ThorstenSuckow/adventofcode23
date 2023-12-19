@@ -50,130 +50,243 @@ public class RecordParser extends Parser {
             numbers.add(Integer.valueOf(s));
         }
 
-        int cs = codes.size();
-        int ns = numbers.size();
-
-        System.out.println("sizes: " + cs + " " + ns);
-
-        int numberCursor = 0;
-        char c;
-        boolean leadingSeparator = false;
-
-        for (int i = 0; i < codeString.length(); i++) {
-
-            c = codeString.charAt(i);
-            String group = "";
-
-            leadingSeparator = c == '.';
-
-            System.out.println(c + " ("+ i + ")");
-            if (c == '?' || c == '#') {
-                while (c != '.') {
-                    group = group + c;
-                    if (i + 1 == codeString.length()) {
-                        break;
-                    }
-                    c = codeString.charAt(++i);
-                }
-            }
-
-            if (group.equals("")) {
-                continue;
-            }
-
-            if (!leadingSeparator && group.charAt(0) == '?') {
-                //group = group.substring(1);
-            }
-
-            List<Integer> partitions = new ArrayList<>();
-            int groupLen = group.length();
-            int fill = 0;
-            System.out.println("Number Cursor: " + numberCursor + " " + Arrays.toString(numbers.toArray()));
-            for (int j = numberCursor; j < numbers.size(); j++) {
-                partitions.add(numbers.get(j));
-            }
-
-            String fragments = "";
-            for (int o = 0; o < partitions.size(); o++) {
-                fragments += "#".repeat(partitions.get(o)) + ".";
-                if (fragments.length() > group.length()) {
-                    System.out.println("Fragment " + fragments + " doesnt fit into " + group);
-                    break;
-                } else {
-                    System.out.println("Fragment " + fragments + " fits into " + group);
-                    String reverse = reverse(fragments);
-                    System.out.println("reverse Fragment " + reverse + " fits into " + group);
-
-                }
-            }
-            fragments = fragments.substring(0, fragments.length() - 1);
-
-
-
-            System.out.println("Requires leading: " + fragments + " " + leadingSeparator + "; Partitions for group: " +numberCursor + " . " + group +": " + Arrays.toString(partitions.toArray()));
-
-
-
-
-
-        }
-
-
+        sum = probe(codes, numbers.stream().mapToInt(i -> i ).toArray());
 
 
         return sum;
     }
 
+    public int probe(List<String> codes, int[] numbers) {
 
-    public void log(List<Integer> numbers, List<String> codes) {
+        LinkedList<String> list = new LinkedList<>();
+        for (int i = 0; i < numbers.length; i++) {
+            list.add("#".repeat(numbers[i]));
+        }
 
+        int sum = 0;
+        int start = 0;
         for (String code: codes) {
-            System.out.print(code + ".");
-        }
-        for (Integer num: numbers) {
-            System.out.print(num + ",");
+            int cmp = 0;
+            List<Integer> partitions = new ArrayList<>();
+            System.out.println("starting at " + start);
+            for (int i = start; i < numbers.length; i++) {
+                start = i;
+                if (cmp + numbers[i] + (i > 0 && i <= numbers.length - 1 ? 1 : 0)  <= code.length()) {
+                    cmp += numbers[i] + i;
+                    partitions.add(numbers[i]);
+                } else {
+                    break;
+                }
+            }
+            System.out.println(partitions.size() + " possible partitions for " + code + " (" + Arrays.toString(partitions.toArray()) + ")");
+
+            int[] parts = partitions.stream().mapToInt(i->i).toArray();
+
+            List<int[]> groups = new ArrayList<>();
+
+
+            for (int i = 0; i < parts.length; i++) {
+
+                int tail = 0;
+                for (int j = 0; j < i; j++) {
+                    tail += numbers[j];
+                }
+
+                int head = 1;
+                for (int j = i + 1; j < parts.length; j++) {
+                    head += numbers[j];
+                }
+
+                groups.add(
+                    new int[]{tail, (code.length()) - head
+                    }
+                );
+                System.out.println("added " + tail + " " + (code.length() - head) + " codeLength: " + code.length());
+            }
+
+            int i = 0;
+            int partialResult = 0;
+            System.out.println(Arrays.toString(parts));
+            for (int[] group: groups) {
+                int spots = (group[1]) - group[0] + 1;
+                int length = parts[i];
+                System.out.println("partial result for " + (spots) +" " + parts[i]);
+                partialResult += spots - (groups.size() - 1 )- parts[i] + 1;
+                i++;
+            }
+            sum += partialResult ;
         }
 
-        System.out.println();
+        return sum;
 
     }
 
-    public int findFixed(String code) {
-        Pattern p = Pattern.compile("#");
-        Matcher m = p.matcher(code);
-        int count = 0;
-        while (m.find()){
-            count +=1;
+
+
+    public void oldProbe(List<String> codes, int[] numbers) {
+
+        LinkedList<String> list = new LinkedList<>();
+        for (int i = 0; i < numbers.length; i++) {
+            list.add("#".repeat(numbers[i]));
         }
-        return count;
+
+        HashMap<String, List<String>> groups = new HashMap<>();
+        for (String code: codes) {
+
+            groups.computeIfAbsent(code, k -> new ArrayList<String>());
+
+            int codeLen = code.length();
+            int end = 1;
+            StringBuilder t = new StringBuilder();
+            for (int i = 0; i < numbers.length; i++) {
+
+                for (int j = 0; j <= i; j++) {
+                    t.append("#".repeat(numbers[j]));
+                }
+
+                String dots = ".".repeat(Math.max(code.length() - t.length(), 0));
+                t.append(dots);
+
+                groups.get(code).add(t.toString());
+                System.out.println(code + "->" + t);
+                t = new StringBuilder();
+            }
+
+        }
+
+        int sum = 0;
+        List<Integer> skipGroups = new ArrayList<>();
+        for (String code: codes) {
+
+            List<String> tokenGroups = groups.get(code);
+            int lastSuccessFullToken = 0;
+
+
+            for (int i = 0; i < tokenGroups.size(); i++) {
+
+                if (skipGroups.contains(i)) {
+                    System.out.println(" xx Skipping " + tokenGroups.get(i) + " (" + i + ") for code " + code);
+                    continue;
+                }
+                String tokenGroup = tokenGroups.get(i);
+                if (tokenGroup.length() > code.length()) {
+                    System.out.println("tokenGroup bigger than code, skipping (code: " + code + "; tokenGroup: " +tokenGroup + ")");
+                    continue;
+                }
+                List<String> permutations = getPermutations(tokenGroup);
+
+                if (!permutations.isEmpty()) {
+                    permutations = sanitizePermutations(permutations, code, i, numbers);
+                }
+
+                if (permutations.isEmpty()) {
+                    System.out.println("No permutation found for " + code + " and " +tokenGroup);
+                    System.out.println("-- last successfull tokengroup was " + i);
+                    break;
+                } else {
+                    System.out.println(" -> Found " + permutations.size() + " permutation for " + code + " and " +tokenGroup);
+                    skipGroups.add(i);
+                }
+
+            }
+
+        }
+
+    }
+
+    public int sumSymbols(String token, String symbol) {
+        int index = token.indexOf(symbol);
+        int sum = 0;
+        while (index >= 0) {
+            sum++;
+            index = token.indexOf(symbol, index + 1);
+        }
+        return sum;
+    }
+
+    public List<String> sanitizePermutations(List<String> permutations, String code, int i, int[] numbers) {
+
+        System.out.println("Sanitizing " + code + " for " + i + " (" + Arrays.toString(numbers));
+        int maxHashes = Arrays.stream(Arrays.copyOfRange(numbers, 0, i)).sum();
+        int minDots = i;
+
+        List<String> filtered = new ArrayList<>();
+
+        for (String permutation: permutations) {
+
+            if (sumSymbols(permutation, "#") != maxHashes && sumSymbols(permutation, ".") < minDots) {
+                System.out.println("Permutation " + permutation + " is invalid (minDots: " + minDots + "; maxHashes: " +  maxHashes+")");
+                continue;
+            }
+
+            System.out.println(" - - " + permutation + " looks valid.");
+            filtered.add(permutation);
+            /*
+
+            if (code.contains("#")) {
+                int first = code.indexOf("#");
+                first = Math.max(first - 1, first);
+                int j = first +1;
+                // ?#.
+                // ?#?
+                // #.
+                //
+                while (code.charAt(first + 1)) {
+
+                }
+                int j = 0:
+                while (first < code.length() && j < numbers[i]) {
+
+                }*/
+
+
+
+        }
+
+        return permutations;
     }
 
 
-    public static long fac(int n) {
-        long fak = 1L;
-        for ( int i = 2; i <= n; i++ )
-            fak = fak * i;
-        return fak;
+
+    public List<String> getPermutations(String s)
+    {
+        char[] c = s.toCharArray();
+        Arrays.sort(c);
+
+        List<String> permutations = new ArrayList<>();
+
+        permutate(0, c, permutations);
+
+        for (String opt: permutations) {
+            //System.out.println(opt);
+        }
+
+        return permutations;
     }
 
 
-    public String reverse(String input) {
-        StringBuilder input1 = new StringBuilder();
 
-        // append a string into StringBuilder input1
-        input1.append(input);
-
-        // reverse StringBuilder input1
-        input1.reverse();
-
-        String o = input1.toString();
-        if (input.endsWith(".") && o.startsWith(".")) {
-        //    return o.substring(1) + '.';
-        }
-        if (input.startsWith(".") && o.endsWith(".")) {
-          //  return "." + o.substring(0, o.length() - 1);
-        }
-
-        return input1.toString();
+    private void swap(int pos1, int pos2, char[] c)
+    {
+        char temp = c[pos1];
+        c[pos1] = c[pos2];
+        c[pos2] = temp;
     }
+
+    public void permutate(int start, char[] c, List<String> permutations)
+    {
+        if (start == c.length) {
+            permutations.add(new String(c));
+        }
+
+        for (int i = start; i < c.length; i++) {
+            if (i == start || (c[i] != c[i-1] && c[i] != c[start])) {
+                swap(start, i, c);
+                permutate(start + 1, c, permutations);
+                swap(start, i, c);
+            }
+        }
+    }
+
+
 }
