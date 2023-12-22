@@ -40,9 +40,8 @@ public class MapParser extends Parser {
     @Override
     public List<ParserResult> postProcess(List<ParserResult> parserResults) {
 
-
-        long x = 0;
-        long y = 0;
+        long x;
+        long y;
 
         long sum = 0;
         for (List<String> map: maps) {
@@ -62,75 +61,91 @@ public class MapParser extends Parser {
     }
 
 
+    public long convert(String line) {
+        return Long.parseUnsignedLong(
+                line.replace("#", "1").replace(".", "0"), 2);
+    }
+
+    public List<Long> getNumericalMap(List<String> mapObject, boolean vertical) {
+
+        List<Long> newMap = new ArrayList<>();
+
+        if (vertical) {
+            int lineLength = mapObject.get(0).length();
+
+            for (int i = 0; i < lineLength; i++) {
+                StringBuilder line = new StringBuilder();
+                for (int j = 0; j < mapObject.size(); j++) {
+                    line.append(mapObject.get(j).charAt(i));
+                }
+                newMap.add(convert(line.toString()));
+            }
+
+            return newMap;
+        }
+
+        for (int j = 0; j < mapObject.size(); j++) {
+            newMap.add(convert(mapObject.get(j)));
+        }
+
+        return newMap;
+    }
+
     public long[] processMap(List<String> mapObject) {
 
         long[] matches = new long[2];
 
-        long horizontal = processSymmetry(mapObject);
-        //System.out.println("hor: " + horizontal);
+        List<Long> vert = getNumericalMap(mapObject, true);
+        List<Long> hor = getNumericalMap(mapObject, false);
 
-        matches[1] = perfectMatch(mapObject, horizontal);
-        //System.out.println("[hor] Perfect match: " + matches[1]);
-
-
-
-        int lineLength = mapObject.get(0).length();
-
-        List<String> vert = new ArrayList<>();
-        for (int i = 0; i < lineLength; i++) {
-            String line = "";
-            for (int j = 0; j < mapObject.size(); j++) {
-                line += mapObject.get(j).charAt(i);
-            }
-            vert.add(line);
-        }
-
-        int vertical = processSymmetry(vert);
-        //System.out.println("vert: " + vertical);
-        matches[0] = perfectMatch(vert, vertical);
-        //System.out.println("[vert] Perfect match: " + matches[0]);
-        //System.out.println();
+        matches[0] = perfectMatch(vert, processSymmetry(vert));
+        matches[1] = perfectMatch(hor, processSymmetry(hor));
 
         return matches;
     }
 
-    public int processSymmetry(List<String> mapObject) {
-
-        int match = -1;
+    public int processSymmetry(List<Long> mapObject) {
+        int match = 0;
 
         for (int i = 0; i < mapObject.size(); i++) {
-            if (i == mapObject.size() -1) {
+            if (i == mapObject.size() - 1) {
                 continue;
             }
+
             if (mapObject.get(i).equals(mapObject.get(i + 1))) {
                 if (perfectMatch(mapObject, i) != 0) {
                     match = i;
+                    break;
                 }
             }
         }
-
-
 
         return match;
     }
 
 
-    public long perfectMatch(List<String> map, long index) {
-        long h = index + 1;
-        long perfectMatch = 0;
-        for(long i = index; i >= 0; i--) {
-            String left = map.get((int) i);
-            String right = "";
+    public long perfectMatch(List<Long> map, int index) {
+        int h = index + 1;
+        int perfectMatch = 0;
+        int i;
+
+        for(i = index; i >= 0; i--) {
+            long left = map.get(i);
+            long right = 0;
             if (h < map.size()) {
-                right = map.get((int) h++);
-                if (!left.equals(right)) {
+                right = map.get(h);
+                if (left != right) {
                     perfectMatch = 0;
                     break;
                 }
             }
+             h++;
             perfectMatch++;
         }
-        return perfectMatch;
+        if (i == -1) {
+            return perfectMatch;
+        }
+        return 0;
     }
 }
 

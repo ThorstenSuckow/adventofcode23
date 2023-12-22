@@ -16,8 +16,8 @@ public class MapParserTest {
 
 
     @Test
-    @DisplayName("RecordParser")
-    public void testRecordParser() {
+    @DisplayName("MapParser")
+    public void testMapParser() {
 
 
         ResourceReader reader = new ResourceReader();
@@ -27,7 +27,7 @@ public class MapParserTest {
 
         List<ParserResult> result = reader.parseContents(fileName, parser);
 
-        assertEquals(405, result.get(0).getValue());
+        assertEquals(405, (long) result.get(0).getValue());
 
     }
 
