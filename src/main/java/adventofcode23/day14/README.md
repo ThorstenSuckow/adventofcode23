@@ -12,3 +12,4 @@ The total load on the north support beams is 112773
 ### Part Two
 
 #### The Solution
+The total load on the north support beams after 1.000.000.000 cycles is 98894
