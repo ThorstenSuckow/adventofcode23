@@ -14,6 +14,16 @@ public class MapParser extends Parser {
 
     int cursor = 0;
 
+    boolean clearSmudged = false;
+
+    public MapParser() {
+        this(false);
+    }
+
+
+    public MapParser(boolean clearSmudged) {
+        this.clearSmudged = clearSmudged;
+    }
 
     public ParserResult parseLine(String line, int lineIndex) {
 
@@ -60,6 +70,23 @@ public class MapParser extends Parser {
         return results;
     }
 
+    public boolean smudged(long lft, long rgt) {
+        long count = 0;
+        long n = lft ^ rgt;
+        while (n > 0) {
+            count += n & 1;
+            if (count > 1) {
+                //   return false;
+            }
+            n >>= 1;
+        }
+
+        if (count == 1) {
+            return true;
+        }
+
+        return false;
+    }
 
     public long convert(String line) {
         return Long.parseUnsignedLong(
@@ -98,8 +125,14 @@ public class MapParser extends Parser {
         List<Long> vert = getNumericalMap(mapObject, true);
         List<Long> hor = getNumericalMap(mapObject, false);
 
-        matches[0] = perfectMatch(vert, processSymmetry(vert));
-        matches[1] = perfectMatch(hor, processSymmetry(hor));
+        if (clearSmudged) {
+           // matches[0] = processSmudged(vert);
+            matches[1] = processSmudged(hor);
+           // System.out.println(Arrays.toString(matches));
+        } else {
+            matches[0] = perfectMatch(vert, processSymmetry(vert));
+            matches[1] = perfectMatch(hor, processSymmetry(hor));
+        }
 
         return matches;
     }

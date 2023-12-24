@@ -18,11 +18,17 @@ public class Main {
         String fileName = "input/day13/input.txt";
         MapParser parser;
         parser = new MapParser();
+        List<ParserResult> result;
 
-        List<ParserResult> result = reader.parseContents(fileName, parser);
-
-
+        result = reader.parseContents(fileName, parser);
         System.out.println("Summarizing all notes produces " + result.get(0).getValue());
+
+        // part two
+        parser = new MapParser(true);
+
+        result = reader.parseContents(fileName, parser);
+        System.out.println("Summarizing all notes after cleaning the smudge produces " + result.get(0).getValue());
+
 
     }
 }
