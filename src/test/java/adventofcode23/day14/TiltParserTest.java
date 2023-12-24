@@ -11,8 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TiltParserTest {
 
 
-
-@Test
+    @Test
     @DisplayName("TiltParser")
     public void testTiltParser() {
 
