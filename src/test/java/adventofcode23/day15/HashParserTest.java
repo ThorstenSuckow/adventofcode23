@@ -1,10 +1,12 @@
 package adventofcode23.day15;
 
+import adventofcode23.lib.ParserResult;
 import adventofcode23.lib.ResourceReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,7 +36,11 @@ public class HashParserTest {
         assertEquals(214, parser.valueOf("pc=6"));
         assertEquals(231,  parser.valueOf("ot=7"));
 
-        assertEquals(1320, (long) reader.parseContents(fileName, parser).get(0).getValue());
+        List<ParserResult> results = reader.parseContents(fileName, parser);
+        assertEquals(1320, results.get(0).getValue());
+
+        long sum = parser.processLenses();
+        assertEquals(145, sum);
     }
 
 }

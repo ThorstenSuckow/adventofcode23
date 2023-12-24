@@ -13,5 +13,8 @@ public class Main {
 
         System.out.println("The sum of the steps of the initialization sequence is "
                 + reader.parseContents(fileName, parser).get(0).getValue());
+
+        long sum = parser.processLenses();
+        System.out.println("The checksum of the lenses is " + sum);
     }
 }
