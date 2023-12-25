@@ -1,6 +1,9 @@
 package adventofcode23.day16;
 
+import adventofcode23.lib.ParserResult;
 import adventofcode23.lib.ResourceReader;
+
+import java.util.List;
 
 public class Main {
 
@@ -11,8 +14,11 @@ public class Main {
         RayParser parser;
         parser = new RayParser();
 
+        List<ParserResult> results = reader.parseContents(fileName, parser);
+        parser.logRays();
+
         System.out.println("The sum of tiles ending up energized is "
-                + reader.parseContents(fileName, parser).get(0).getValue());
+                + results.get(0).getValue());
 
     }
 }

@@ -1,17 +1,13 @@
 package adventofcode23.day16;
 
-package adventofcode23.day15;
-
-import adventofcode23.day15.HashParser;
 import adventofcode23.lib.ParserResult;
 import adventofcode23.lib.ResourceReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RayParserTest {
 
@@ -29,7 +25,8 @@ public class RayParserTest {
 
 
         List<ParserResult> results = reader.parseContents(fileName, parser);
-        assertEquals(1320, results.get(0).getValue());
+        parser.logRays();
+        assertEquals(46, results.get(0).getValue());
 
     }
 

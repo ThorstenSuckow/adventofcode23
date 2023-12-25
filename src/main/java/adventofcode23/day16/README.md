@@ -7,6 +7,7 @@ https://adventofcode.com/2023/day/16
 ### Part One
 
 #### The Solution
+The sum of tiles ending up energized is 7496
 
 ### Part Two
 
