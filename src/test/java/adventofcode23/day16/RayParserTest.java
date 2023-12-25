@@ -28,6 +28,8 @@ public class RayParserTest {
         parser.logRays();
         assertEquals(46, results.get(0).getValue());
 
+        assertEquals(51, parser.getMax());
+
     }
 
 }

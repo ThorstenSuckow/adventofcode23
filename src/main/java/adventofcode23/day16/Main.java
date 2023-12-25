@@ -5,6 +5,8 @@ import adventofcode23.lib.ResourceReader;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -15,10 +17,13 @@ public class Main {
         parser = new RayParser();
 
         List<ParserResult> results = reader.parseContents(fileName, parser);
-        parser.logRays();
+
 
         System.out.println("The sum of tiles ending up energized is "
                 + results.get(0).getValue());
+
+
+        System.out.println("The largest sum of energized tiles in the alternative configuration is " + parser.getMax());
 
     }
 }

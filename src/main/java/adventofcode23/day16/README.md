@@ -12,3 +12,4 @@ The sum of tiles ending up energized is 7496
 ### Part Two
 
 #### The Solution
+The largest sum of energized tiles in the alternative configuration is 7932
