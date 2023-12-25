@@ -41,17 +41,7 @@ public class RayParser extends Parser {
 
         List<ParserResult> results = new ArrayList<>();
 
-        beamMeUp();
-
-        int sum = 0;
-
-        for (int y = 0; y < stepOverlay.length; y++) {
-            for (int x = 0; x < stepOverlay[y].length; x++) {
-                if (stepOverlay[y][x] != null) {
-                    sum++;
-                }
-            }
-        }
+        int sum = beamMeUp();
 
         ParserResult sumResult = new ParserResult();
         sumResult.setValue(sum);
@@ -76,17 +66,63 @@ public class RayParser extends Parser {
         return null;
     }
 
-    public void beamMeUp() {
 
+    public int beamMeUp() {
         Direction[] dir = computeDirection(0, 0, Direction.EAST);
 
         if (dir.length != 0) {
-            move(0, 0, dir[0]);
-            return;
+            return beamMeUp(0, 0, dir[0]);
         }
 
-        move(0, 0, Direction.EAST);
+        return beamMeUp(0, 0, Direction.EAST);
+
     }
+
+
+    public int beamMeUp(int x, int y, Direction dir) {
+
+
+        int sum = 0;
+        move(x, y, dir);
+
+        for (y = 0; y < stepOverlay.length; y++) {
+            for (x = 0; x < stepOverlay[y].length; x++) {
+                if (stepOverlay[y][x] != null) {
+                    sum++;
+                }
+            }
+        }
+
+        return sum;
+    }
+
+
+    public int getMax() {
+
+        int max = 0;
+        for (int y = 0; y < rows.size(); y++) {
+            stepOverlay = null;
+            visitedNodes = null;
+            max = Math.max(max, beamMeUp(0, y, Direction.EAST));
+
+            stepOverlay = null;
+            visitedNodes = null;
+            max = Math.max(max, beamMeUp(rows.get(0).size() - 1, y, Direction.WEST));
+        }
+
+        for (int x = 0; x < rows.get(0).size(); x++) {
+            stepOverlay = null;
+            visitedNodes = null;
+            max = Math.max(max, beamMeUp(x, 0, Direction.SOUTH));
+
+            stepOverlay = null;
+            visitedNodes = null;
+            max = Math.max(max, beamMeUp(x, rows.size() - 1, Direction.NORTH));
+        }
+
+        return max;
+    }
+
 
 
     public Direction[] computeDirection(int x, int y, Direction toDir) {
