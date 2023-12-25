@@ -5,12 +5,9 @@ import adventofcode23.lib.ParserResult;
 import adventofcode23.lib.SymbolParser;
 import adventofcode23.lib.TokenInformation;
 
-import javax.swing.text.html.parser.Entity;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class CopyScratchCardParser extends Parser {
 

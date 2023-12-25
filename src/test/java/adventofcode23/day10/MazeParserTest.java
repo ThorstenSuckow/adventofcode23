@@ -1,11 +1,9 @@
 package adventofcode23.day10;
 
-import adventofcode23.day9.SensorParser;
 import adventofcode23.lib.ResourceReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MazeParserTest {

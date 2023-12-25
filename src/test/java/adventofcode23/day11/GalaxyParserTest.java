@@ -1,6 +1,5 @@
 package adventofcode23.day11;
 
-import adventofcode23.day10.MazeParser;
 import adventofcode23.lib.ResourceReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

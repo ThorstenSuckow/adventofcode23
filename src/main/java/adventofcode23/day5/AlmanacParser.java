@@ -1,22 +1,8 @@
 package adventofcode23.day4;
 
-import adventofcode23.lib.Parser;
-import adventofcode23.lib.Interval;
-import adventofcode23.lib.Range;
-import adventofcode23.lib.ParserResult;
-import adventofcode23.lib.SymbolParser;
-import adventofcode23.lib.TokenInformation;
+import adventofcode23.lib.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 
 public class AlmanacParser extends Parser {
 

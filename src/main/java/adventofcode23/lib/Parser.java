@@ -1,6 +1,5 @@
 package adventofcode23.lib;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Parser {

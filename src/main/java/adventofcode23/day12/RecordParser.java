@@ -3,11 +3,7 @@ package adventofcode23.day12;
 import adventofcode23.lib.Parser;
 import adventofcode23.lib.ParserResult;
 
-import java.math.BigInteger;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class RecordParser extends Parser {
 

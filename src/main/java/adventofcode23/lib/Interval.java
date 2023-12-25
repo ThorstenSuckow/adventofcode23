@@ -1,9 +1,5 @@
 package adventofcode23.lib;
 
-import java.security.cert.CertPathBuilderResult;
-
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 public class Interval implements Cloneable {
 
     private long start;

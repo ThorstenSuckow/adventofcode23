@@ -2,10 +2,6 @@ package adventofcode23.day2;
 
 import adventofcode23.lib.Parser;
 import adventofcode23.lib.ParserResult;
-
-import javax.print.attribute.IntegerSyntax;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 public class GameSequenceParser extends Parser {
 
     public ParserResult parseLine(String line, int index) {

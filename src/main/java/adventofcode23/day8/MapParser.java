@@ -3,7 +3,10 @@ package adventofcode23.day8;
 import adventofcode23.lib.Parser;
 import adventofcode23.lib.ParserResult;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MapParser extends Parser {
 

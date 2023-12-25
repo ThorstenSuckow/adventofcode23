@@ -1,13 +1,8 @@
 package adventofcode23.day9;
 
-import adventofcode23.day8.MapParser;
 import adventofcode23.lib.ResourceReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 

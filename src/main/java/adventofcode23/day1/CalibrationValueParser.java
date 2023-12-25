@@ -3,9 +3,8 @@ package adventofcode23.day1;
 import adventofcode23.lib.Parser;
 import adventofcode23.lib.ParserResult;
 
-import javax.print.attribute.IntegerSyntax;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 public class CalibrationValueParser extends Parser {
 
     public ParserResult parseLine(String line, int index) {

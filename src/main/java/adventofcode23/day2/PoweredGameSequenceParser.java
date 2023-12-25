@@ -1,13 +1,10 @@
 package adventofcode23.day2;
 
-import adventofcode23.lib.Parser;
 import adventofcode23.lib.ParserResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PoweredGameSequenceParser extends GameSequenceParser {
 

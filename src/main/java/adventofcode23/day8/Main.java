@@ -3,7 +3,6 @@ package adventofcode23.day8;
 import adventofcode23.lib.ResourceReader;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 

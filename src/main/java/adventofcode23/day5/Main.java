@@ -1,15 +1,7 @@
 package adventofcode23.day5;
 
 import adventofcode23.day4.AlmanacParser;
-import adventofcode23.day4.CopyScratchCardParser;
-import adventofcode23.day4.ScratchCardParser;
-import adventofcode23.lib.ParserResult;
 import adventofcode23.lib.ResourceReader;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class Main {
 

@@ -1,6 +1,5 @@
 package adventofcode23.day1;
 
-import adventofcode23.day1.FixedCalibrationValueParser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

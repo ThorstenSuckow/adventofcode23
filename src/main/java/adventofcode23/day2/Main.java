@@ -1,7 +1,6 @@
 package adventofcode23.day2;
 
 
-import adventofcode23.day1.FixedCalibrationValueParser;
 import adventofcode23.lib.ParserResult;
 import adventofcode23.lib.ResourceReader;
 

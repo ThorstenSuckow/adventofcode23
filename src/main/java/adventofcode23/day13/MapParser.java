@@ -4,7 +4,6 @@ import adventofcode23.lib.Parser;
 import adventofcode23.lib.ParserResult;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MapParser extends Parser {

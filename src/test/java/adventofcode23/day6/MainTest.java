@@ -1,17 +1,10 @@
 package adventofcode23.day6;
 
 
-import adventofcode23.day4.AlmanacParser;
-import adventofcode23.lib.Interval;
-import adventofcode23.lib.ParserResult;
-import adventofcode23.lib.Range;
-import adventofcode23.lib.ResourceReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MainTest {
 

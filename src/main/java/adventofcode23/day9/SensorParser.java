@@ -1,10 +1,11 @@
 package adventofcode23.day9;
 
-import adventofcode23.day8.Node;
 import adventofcode23.lib.Parser;
 import adventofcode23.lib.ParserResult;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class SensorParser extends Parser {
 

@@ -1,12 +1,9 @@
 package adventofcode23.day13;
 
-import adventofcode23.day12.RecordParser;
 import adventofcode23.lib.ParserResult;
 import adventofcode23.lib.ResourceReader;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class Main {

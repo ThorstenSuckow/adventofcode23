@@ -1,7 +1,5 @@
 package adventofcode23.lib;
 
-import adventofcode23.day1.CalibrationValueParser;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

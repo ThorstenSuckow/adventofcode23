@@ -1,8 +1,8 @@
 package adventofcode23.day7;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Hand implements Comparable<Hand> {
 
