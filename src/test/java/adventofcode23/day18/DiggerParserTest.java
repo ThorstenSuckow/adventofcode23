@@ -19,16 +19,15 @@ public class DiggerParserTest {
         ResourceReader reader = new ResourceReader();
         String fileName = "input/day18/testinput.txt";
         DiggerParser parser;
+        List<ParserResult> results;
+
         parser = new DiggerParser();
-
-        List<ParserResult> results = reader.parseContents(fileName, parser);
-
-        parser.logRows();
-
+        results = reader.parseContents(fileName, parser);
         assertEquals(62, (int) (double) results.get(0).getValue());
 
-
-
+        parser = new DiggerParser(true);
+        results = reader.parseContents(fileName, parser);
+        assertEquals( 952408144115L, (long) (double)results.get(0).getValue() );
     }
 
 }

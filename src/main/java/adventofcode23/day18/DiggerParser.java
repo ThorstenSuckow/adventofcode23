@@ -4,6 +4,7 @@ import adventofcode23.lib.Parser;
 import adventofcode23.lib.ParserResult;
 
 import java.util.ArrayList;
+import java.util.HexFormat;
 import java.util.List;
 
 public class DiggerParser extends Parser{
@@ -12,6 +13,14 @@ public class DiggerParser extends Parser{
 
     List<String[]> directions = new ArrayList<>();
 
+    boolean useHex;
+
+    public DiggerParser() {
+        this(false);
+    }
+    public DiggerParser(boolean useHex) {
+        this.useHex = useHex;
+    }
 
     public ParserResult parseLine(String line, int lineIndex) {
 
@@ -27,24 +36,60 @@ public class DiggerParser extends Parser{
 
         String direction = parts[0];
         String steps = parts[1];
+        String hex = parts[2].substring(1, parts[2].length() - 1);
 
+        if (useHex) {
+            direction = hexToDirection(hex);
+            steps = hexToSteps(hex);
+        }
 
         directions.add(new String[]{direction, steps});
 
         return res;
     }
 
+    public String hexToSteps(String hex) {
 
-    private List<int[]> detectCorners() {
-        List<int[]> points = new ArrayList<>();
+        int steps = 0;
 
-        int currentY = 0;
-        int currentX = 0;
+        hex = hex.substring(1, hex.length() - 1);
+
+        steps = HexFormat.fromHexDigits(hex);
+
+        return String.valueOf(steps);
+    }
+
+    public String hexToDirection(String hex) {
+
+        String top = hex.substring(hex.length() - 1);
+        switch (top) {
+            case "0" -> {
+                return "R";
+            }
+            case "1" -> {
+                return "D";
+            }
+            case "2" -> {
+                return "L";
+            }
+            case "3" -> {
+                return "U";
+            }
+        }
+        throw new IllegalArgumentException();
+    }
+
+
+    private List<long[]> detectCorners() {
+        List<long[]> points = new ArrayList<>();
+
+        long currentY = 0;
+        long currentX = 0;
 
         for (String[] dir: directions) {
             String direction = dir[0];
-            int steps = Integer.valueOf(dir[1]);
-            points.add(new int[]{currentX, currentY});
+            long steps = Integer.valueOf(dir[1]);
+            points.add(new long[]{currentX, currentY});
 
             if (direction.equals("R")) {
                 currentX += steps;
@@ -81,24 +126,24 @@ public class DiggerParser extends Parser{
 
         List<ParserResult> results = new ArrayList<>();
 
-        List<int[]> points = detectCorners();
+        List<long[]> points = detectCorners();
 
-        int maxX = Integer.MIN_VALUE;
-        int minX = Integer.MAX_VALUE;
-        int maxY = Integer.MIN_VALUE;
-        int minY = Integer.MAX_VALUE;
+        long maxX = Long.MIN_VALUE;
+        long minX = Long.MAX_VALUE;
+        long maxY = Long.MIN_VALUE;
+        long minY = Long.MAX_VALUE;
 
-        for (int[] point: points) {
+        for (long[] point: points) {
             maxX = Math.max(maxX, point[0]);
             minX = Math.min(minX, point[0]);
             maxY = Math.max(maxY, point[1]);
             minY = Math.min(minY, point[1]);
         }
 
-        rows = createGrid(minX, maxX, minY, maxY);
-        rows = drawRects(rows, minX, minY);
+       // rows = createGrid(minX, maxX, minY, maxY);
+       // rows = drawRects(rows, minX, minY);
 
-        double sum = countTiles( points);
+        double sum = countTiles(points);
 
         ParserResult sumResult = new ParserResult();
         sumResult.setValue(sum);
@@ -112,12 +157,12 @@ public class DiggerParser extends Parser{
      * @param pointsList
      * @return
      */
-    public double countTiles(List<int[]> pointsList) {
+    public double countTiles(List<long[]> pointsList) {
 
-        int[][] points = pointsList.toArray(int[][]::new);
+        long[][] points = pointsList.toArray(long[][]::new);
 
         double area = 0;
-        int x1, x2, y1, y2;
+        long x1, x2, y1, y2;
         double circumference = 0;
         for (int i = 0; i < points.length; i++) {
             x1 = points[i][0];
