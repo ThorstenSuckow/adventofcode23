@@ -16,7 +16,9 @@ public class Main {
 
         List<ParserResult> results = reader.parseContents(fileName, parser);
 
-        System.out.println("The dig plan can hold a total of  " + results.get(0).getValue() + " cubic meters");
+        double sum = (double) results.get(0).getValue();
+
+        System.out.println("The dig plan can hold a total of " +((int) sum) + " cubic meters.");
 
 
     }
